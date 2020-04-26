@@ -43,7 +43,7 @@ public class CustomerTest {
 	@DisplayName("Create customer and verify that is created.")
 	public void createCustomerTest() throws Exception{
 
-		Customer customer = new Customer("Adrian", 100);
+		Customer customer = new Customer("Adrian", 100.00);
     	
         Customer createdCustomer = createCustomer(customer);
 
@@ -54,7 +54,7 @@ public class CustomerTest {
 	@DisplayName("Add credit to a customer and verify that is updated.")
 	public void addCreditCustomerTest() throws Exception{
         
-        Customer customer = new Customer("Adrian", 100);
+        Customer customer = new Customer("Adrian", 100.00);
         double newAmount = 50;    
 
         Customer createdCustomer = 

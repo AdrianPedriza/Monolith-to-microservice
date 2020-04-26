@@ -43,7 +43,7 @@ public class OrderTest {
 	@DisplayName("Create an order and verify that is created.")
 	public void createOrderTest() throws Exception{
 
-        Customer customer = new Customer("Adrian", 100);
+        Customer customer = new Customer("Adrian", 100.00);
         Customer createdCustomer = createCustomer(customer);
         validateUserCreated(customer, createdCustomer);
 
