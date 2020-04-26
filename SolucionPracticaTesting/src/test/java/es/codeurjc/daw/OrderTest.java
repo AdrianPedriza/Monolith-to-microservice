@@ -4,20 +4,27 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import es.codeurjc.daw.model.Customer;
 import es.codeurjc.daw.model.Order;
+import es.codeurjc.daw.model.Product;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 
 public class OrderTest {
 
@@ -36,29 +43,99 @@ public class OrderTest {
 	@DisplayName("Create an order and verify that is created.")
 	public void createOrderTest() throws Exception{
 
-        
-		// Order order = new Order();
-    	
-        // Customer createdCustomer = 
-        //     given().
-        //         request()
-        //             .body(objectMapper.writeValueAsString(customer))
-        //             .contentType(ContentType.JSON).
-        //     when().
-        //         post("/api/customer/").
-        //     then().
-        //         assertThat().
-        //         statusCode(201).
-        //         body("name", equalTo(customer.getName()))
-        //         .extract().as(Customer.class);
+        Customer customer = new Customer("Adrian", 100);
+        Customer createdCustomer = createCustomer(customer);
+        validateUserCreated(customer, createdCustomer);
 
-        // when().
-        //     get("/api/customer/{id}", createdCustomer.getId()).
-        // then().
-        //      assertThat().
-        //      statusCode(200).
-        //      body("name", equalTo(customer.getName())).
-        //      and().body("credit", equalTo(customer.getCredit()));
-        
+        Product product = new Product("Coca-Cola", 10, 2.5);
+        Product createdProduct = createProduct(product);
+        validateProduct(product, createdProduct);
+
+        Order order = new Order(createdCustomer.getId(),createdProduct.getId(), 5);
+        Order createdOrder = createOrder(order);
+        validateOrder(order, createdOrder);
+    }
+
+    private Order createOrder(Order order) throws JsonProcessingException {
+        return given().
+            request()
+                .body(objectMapper.writeValueAsString(order))
+                .contentType(ContentType.JSON).
+        when().
+            post("/api/order/").
+        then().
+            assertThat().
+                statusCode(201)
+            .extract().as(Order.class);
+    }
+
+
+    private void validateOrder(Order order, Order createdOrder) {
+        when().
+            get("/api/order/{id}", createdOrder.getId()).
+        then().
+            assertThat().
+                statusCode(200).
+                and().
+                    body("customerId", equalTo((float) order.getCustomerId())).
+                and().
+                    body("productId", equalTo((float) order.getProductId())).
+                and().
+                    body("units", equalTo(order.getUnits()));
+    }
+
+    private Customer createCustomer(Customer customer) throws JsonProcessingException {
+        return given().
+            request()
+                .body(objectMapper.writeValueAsString(customer))
+                .contentType(ContentType.JSON).
+        when().
+            post("/api/customer/").
+        then().
+            assertThat().
+                statusCode(201).
+                body("name", equalTo(customer.getName()))
+            .extract().as(Customer.class);
+    }
+
+
+    private void validateUserCreated(Customer customer, Customer createdCustomer) {
+        when().
+            get("/api/customer/{id}", createdCustomer.getId()).
+        then().
+             assertThat().
+                statusCode(200).
+                and().
+                    body("name", equalTo(customer.getName())).
+                and().
+                    body("credit", equalTo((float) customer.getCredit()));
+    }
+
+    private Product createProduct(Product product) throws JsonProcessingException {
+        return given().
+            request()
+                .body(objectMapper.writeValueAsString(product))
+                .contentType(ContentType.JSON).
+        when().
+            post("/api/product/").
+        then().
+            assertThat().
+            statusCode(201).
+            body("name", equalTo(product.getName()))
+            .extract().as(Product.class);
+    }
+
+    private void validateProduct(Product product, Product createdProduct) {
+        when().
+            get("/api/product/{id}", createdProduct.getId()).
+        then().
+             assertThat().
+                statusCode(200).
+                and().
+                    body("name", equalTo(product.getName())).
+                and().
+                    body("price", equalTo((float) product.getPrice())).
+                and(). 
+                    body("stock", equalTo(product.getStock()));
     }
 }
