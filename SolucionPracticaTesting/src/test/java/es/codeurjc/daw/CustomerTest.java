@@ -94,7 +94,7 @@ public class CustomerTest {
                     body("credit", equalTo((float) customer.getCredit()));
     }
 
-    private Customer addCreditToCustomer(Customer createdCustomer, double credit){
+    private Customer addCreditToCustomer(Customer createdCustomer, double credit) throws JsonProcessingException {
         return given().
             request()
                 .body(objectMapper.writeValueAsString(new Customer(credit)))
