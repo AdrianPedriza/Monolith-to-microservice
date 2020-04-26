@@ -24,6 +24,7 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
+
 	@GetMapping("/product")
 	public ResponseEntity<List<Product>> getAllProducts() {
 		return new ResponseEntity<>(this.productService.getAll(), HttpStatus.OK);
