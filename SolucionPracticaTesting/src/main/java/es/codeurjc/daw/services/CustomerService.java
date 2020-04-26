@@ -15,10 +15,6 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public CustomerService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
-
     public void addOrder(Customer customer) {
         this.customerRepository.save(customer);
     }
