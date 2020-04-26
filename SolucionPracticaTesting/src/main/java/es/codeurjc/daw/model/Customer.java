@@ -19,12 +19,12 @@ public class Customer {
 
     public Customer(){}
 
-    public Customer(String  name, Long credit){
+    public Customer(String  name, double credit){
         this.name = name;
         this.credit = credit;
     }
 
-    public Customer(Long credit){
+    public Customer(double credit){
         this.credit = credit;
     }
 
