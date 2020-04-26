@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,15 @@ public class OrderController {
             }
         }
         return new ResponseEntity<Order>(HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @GetMapping("/order/{id}")
+    public ResponseEntity<Order> getOrder(@PathVariable final Long id) {
+        Optional<Order> order = this.orderService.get(id);
+        if(order.isPresent()){
+            return new ResponseEntity<Order>(order.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<Order>(HttpStatus.NOT_FOUND);
     }
     
     private boolean isOrderInStock(Product product, int units) {
