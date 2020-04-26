@@ -17,11 +17,11 @@ public class Product {
 
     private int stock;
     private String name;
-    private Long price;
+    private double price;
 
     public Product(){}
 
-    public Product(String name, int stock, Long price){
+    public Product(String name, int stock, double price){
         this.name = name;
         this.stock = stock;
         this.price = price;
@@ -51,11 +51,11 @@ public class Product {
         return stock;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public Long getPrice() {
+    public double getPrice() {
         return price;
     }
 }
