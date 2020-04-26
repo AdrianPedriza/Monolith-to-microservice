@@ -1,7 +1,6 @@
 package es.codeurjc.daw;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -10,13 +9,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -24,7 +23,7 @@ import io.restassured.http.ContentType;
 import es.codeurjc.daw.model.Customer;
 
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class CustomerTest {
 
@@ -69,6 +68,7 @@ public class CustomerTest {
 
     private Customer createCustomer(Customer customer) throws JsonProcessingException {
         return given().
+                port(port).
             request()
                 .body(objectMapper.writeValueAsString(customer))
                 .contentType(ContentType.JSON).
@@ -83,6 +83,8 @@ public class CustomerTest {
 
 
     private void validateUserCreated(Customer customer, Customer createdCustomer) {
+        given().
+            port(port).
         when().
             get("/api/customer/{id}", createdCustomer.getId()).
         then().
@@ -94,8 +96,8 @@ public class CustomerTest {
                     body("credit", equalTo((float) customer.getCredit()));
     }
 
-    private Customer addCreditToCustomer(Customer createdCustomer, double credit){
-        return given().
+    private Customer addCreditToCustomer(Customer createdCustomer, double credit) throws JsonProcessingException {
+        return given().port(port).
             request()
                 .body(objectMapper.writeValueAsString(new Customer(credit)))
                 .contentType(ContentType.JSON).
