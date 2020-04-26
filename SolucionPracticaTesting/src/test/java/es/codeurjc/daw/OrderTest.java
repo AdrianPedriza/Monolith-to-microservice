@@ -79,9 +79,9 @@ public class OrderTest {
             assertThat().
                 statusCode(200).
                 and().
-                    body("customerId", equalTo((float) order.getCustomerId())).
+                    body("customerId", equalTo(Integer.valueOf(order.getCustomerId().toString()))).
                 and().
-                    body("productId", equalTo((float) order.getProductId())).
+                    body("productId", equalTo(Integer.valueOf(order.getProductId().toString()))).
                 and().
                     body("units", equalTo(order.getUnits()));
     }
