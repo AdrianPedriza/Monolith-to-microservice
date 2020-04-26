@@ -43,8 +43,7 @@ public class ProductTest {
 
 		Product product = new Product("Coca-Cola", 10, 2.5);
     	
-        Product createdProduct = 
-            createProduct(product);
+        Product createdProduct = createProduct(product);
 
         validateProduct(product, createdProduct);
     }

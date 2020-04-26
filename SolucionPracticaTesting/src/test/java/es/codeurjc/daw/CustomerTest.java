@@ -45,8 +45,7 @@ public class CustomerTest {
 
 		Customer customer = new Customer("Adrian", 100);
     	
-        Customer createdCustomer = 
-            createCustomer(customer);
+        Customer createdCustomer = createCustomer(customer);
 
         validateUserCreated(customer, createdCustomer);
     }
