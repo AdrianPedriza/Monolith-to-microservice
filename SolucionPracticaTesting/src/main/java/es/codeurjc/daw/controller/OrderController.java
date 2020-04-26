@@ -1,5 +1,7 @@
 package es.codeurjc.daw.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,38 +21,37 @@ import es.codeurjc.daw.services.ProductService;
 @RequestMapping("/api")
 public class OrderController {
 
-
-	@Autowired
+    @Autowired
     private OrderService orderService;
-    
+
     @Autowired
     private CustomerService customerService;
-    
+
     @Autowired
-	private ProductService productService;
-    
+    private ProductService productService;
+
     @PostMapping("/order")
-	public ResponseEntity<Order> newOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> newOrder(@RequestBody Order order) {
 
-        Long orderAmount = this.productService.getAmount(order.getProductId(), order.getUnits());
-        Customer customer = this.customerService.get(order.getCustomerId());
-        Product product = this.productService.get(order.getProductId());
+        Optional<Product> product = this.productService.get(order.getProductId());
+        Optional<Customer> customer = this.customerService.get(order.getCustomerId());
 
-        if (costumerHasEnoguthMoney(orderAmount, customer) && 
-            isOrderInStock(product, order.getUnits())){
-            this.customerService.removeCredit(customer, orderAmount);
-            this.orderService.addOrder(order);
-            return new ResponseEntity<>(order, HttpStatus.CREATED);
-        }else{
-            return new ResponseEntity<>(order, HttpStatus.METHOD_NOT_ALLOWED);
+        if(product.isPresent() && customer.isPresent()){
+            double orderAmount = this.productService.getAmount(order.getProductId(), order.getUnits());
+            if (costumerHasEnoguthMoney(orderAmount, customer.get()) && isOrderInStock(product.get(), order.getUnits())){
+                this.customerService.removeCredit(customer.get(), orderAmount);
+                this.orderService.addOrder(order);
+                return new ResponseEntity<Order>(order, HttpStatus.CREATED);
+            }
         }
+        return new ResponseEntity<Order>(HttpStatus.METHOD_NOT_ALLOWED);
     }
     
     private boolean isOrderInStock(Product product, int units) {
         return this.productService.hasEnoughtStock(product, units);
     }
 
-    private boolean costumerHasEnoguthMoney(Long orderAmount, Customer customer) {
+    private boolean costumerHasEnoguthMoney(double orderAmount, Customer customer) {
         return orderAmount <= customerService.getCredit(customer);
     }
 

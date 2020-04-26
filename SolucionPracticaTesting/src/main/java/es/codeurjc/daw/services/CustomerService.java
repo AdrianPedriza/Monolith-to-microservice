@@ -1,6 +1,8 @@
 package es.codeurjc.daw.services;
 
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,21 +27,21 @@ public class CustomerService {
         return false;
     }
 
-    public Customer get(Long id) {
-        return this.customerRepository.findById(id).get();
+    public Optional<Customer> get(Long id) {
+        return this.customerRepository.findById(id);
     }
 
 	public double getCredit(Customer customer) {
 		return customer.getCredit();
 	}
 
-	public void removeCredit(Customer customer, Long orderAmount) {
-        customer.setCredit(customer.getCredit() + orderAmount);
+	public void removeCredit(Customer customer, double orderAmount) {
+        customer.setCredit(customer.getCredit() - orderAmount);
         this.customerRepository.save(customer);
 	}
 
 	public void addCredit(Customer customer, double money) {
-        customer.setCredit(customer.getCredit() - money);
+        customer.setCredit(customer.getCredit() + money);
         this.customerRepository.save(customer);
 	}
 

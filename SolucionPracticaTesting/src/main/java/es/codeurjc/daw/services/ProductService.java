@@ -1,6 +1,7 @@
 package es.codeurjc.daw.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,27 +15,31 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getAll(){
+    public List<Product> getAll() {
         return this.productRepository.findAll();
     }
 
-    public Product get(Long id){
-        return this.productRepository.findById(id).get();
+    public Optional<Product> get(Long id) {
+        return this.productRepository.findById(id);
     }
 
     public void addProduct(Product product){
         this.productRepository.save(product);
     }
 
-	public Long getAmount(Long productId, int units) {
-		return null;
+	public double getAmount(Long productId, int units) {
+        Optional<Product> product = this.productRepository.findById(productId);
+        if (product.isPresent()){
+            return product.get().getPrice() * units;
+        }
+		return 0;
 	}
 
 	public boolean hasEnoughtStock(Product product, int units) {
-		return false;
+		return this.productRepository.findById(product.getId()).get().getStock() >= units;
 	}
 }

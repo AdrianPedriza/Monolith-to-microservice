@@ -1,5 +1,7 @@
 package es.codeurjc.daw.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,29 +24,28 @@ public class CustomerController {
     private CustomerService customService;
 
     @PostMapping("/customer/")
-	public ResponseEntity<Customer> newCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<Customer> newCustomer(@RequestBody Customer customer) {
         this.customService.add(customer);
         return new ResponseEntity<Customer>(customer, HttpStatus.CREATED);
     }
 
     @GetMapping("/customer/{id}")
-	public ResponseEntity<Customer> getCustomer(@PathVariable final Long id) {
-        Customer customer = this.customService.get(id);
-        if(customer != null){
-            return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+    public ResponseEntity<Customer> getCustomer(@PathVariable final Long id) {
+        Optional<Customer> customer = this.customService.get(id);
+        if(customer.isPresent()){
+            return new ResponseEntity<Customer>(customer.get(), HttpStatus.OK);
         }
-        return new ResponseEntity<Customer>(customer, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/customer/{id}/credit")
-	public ResponseEntity<Customer> addCredit(@RequestBody double money, @PathVariable Long id) {
-
-        Customer customer = this.customService.get(id);
-        if (customer != null){
-            this.customService.addCredit(customer, money);
-            return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+	public ResponseEntity<Customer> addCredit(@RequestBody Customer newCustomer, @PathVariable final Long id) {
+        Optional<Customer> customer = this.customService.get(id);
+        if (customer.isPresent()){
+            this.customService.addCredit(customer.get(), newCustomer.getCredit());
+            return new ResponseEntity<Customer>(customer.get(), HttpStatus.OK);
         }else{
-            return new ResponseEntity<Customer>(customer, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
         }
     }
 

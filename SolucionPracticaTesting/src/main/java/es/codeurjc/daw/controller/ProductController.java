@@ -2,6 +2,7 @@ package es.codeurjc.daw.controller;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.codeurjc.daw.services.ProductService;
 import es.codeurjc.daw.model.Product;
-
 
 @RestController
 @RequestMapping("/api")
@@ -31,9 +31,9 @@ public class ProductController {
 
 	@GetMapping("/product/{id}")
 	public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-		Product product = this.productService.get(id);
-		if (product != null) {
-            return new ResponseEntity<>(this.productService.get(id), HttpStatus.OK);
+		Optional<Product> product = this.productService.get(id);
+		if (product.isPresent()) {
+            return new ResponseEntity<>(product.get(), HttpStatus.OK);
 		}
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
