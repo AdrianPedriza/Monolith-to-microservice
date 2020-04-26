@@ -1,7 +1,6 @@
 package es.codeurjc.daw;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +49,7 @@ public class ProductTest {
 
     private Product createProduct(Product product) throws JsonProcessingException {
         return given().
+                port(port).
             request()
                 .body(objectMapper.writeValueAsString(product))
                 .contentType(ContentType.JSON).
@@ -64,6 +64,8 @@ public class ProductTest {
 
 
     private void validateProduct(Product product, Product createdProduct) {
+        given().
+            port(port).
         when().
             get("/api/product/{id}", createdProduct.getId()).
         then().

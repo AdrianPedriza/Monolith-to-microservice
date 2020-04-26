@@ -1,7 +1,6 @@
 package es.codeurjc.daw;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +57,7 @@ public class OrderTest {
 
     private Order createOrder(Order order) throws JsonProcessingException {
         return given().
+                port(port).
             request()
                 .body(objectMapper.writeValueAsString(order))
                 .contentType(ContentType.JSON).
@@ -71,6 +71,8 @@ public class OrderTest {
 
 
     private void validateOrder(Order order, Order createdOrder) {
+        given().
+            port(port).
         when().
             get("/api/order/{id}", createdOrder.getId()).
         then().
@@ -86,6 +88,7 @@ public class OrderTest {
 
     private Customer createCustomer(Customer customer) throws JsonProcessingException {
         return given().
+                port(port).
             request()
                 .body(objectMapper.writeValueAsString(customer))
                 .contentType(ContentType.JSON).
@@ -100,6 +103,8 @@ public class OrderTest {
 
 
     private void validateUserCreated(Customer customer, Customer createdCustomer) {
+        given().
+            port(port).
         when().
             get("/api/customer/{id}", createdCustomer.getId()).
         then().
@@ -113,6 +118,7 @@ public class OrderTest {
 
     private Product createProduct(Product product) throws JsonProcessingException {
         return given().
+                port(port).
             request()
                 .body(objectMapper.writeValueAsString(product))
                 .contentType(ContentType.JSON).
@@ -126,6 +132,8 @@ public class OrderTest {
     }
 
     private void validateProduct(Product product, Product createdProduct) {
+        given().
+            port(port).
         when().
             get("/api/product/{id}", createdProduct.getId()).
         then().
