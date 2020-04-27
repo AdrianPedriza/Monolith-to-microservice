@@ -55,6 +55,39 @@ public class OrderTest {
         validateOrder(order, createdOrder);
     }
 
+    @Test
+	@DisplayName("Create an order with more units that stock and verify that is not created.")
+	public void createOrderWithoutEnoughStockTest() throws Exception{
+
+        Customer customer = new Customer("Adrian", 100.00);
+        Customer createdCustomer = createCustomer(customer);
+        validateUserCreated(customer, createdCustomer);
+
+        Product product = new Product("Coca-Cola", 10, 2.5);
+        Product createdProduct = createProduct(product);
+        validateProduct(product, createdProduct);
+
+        Order order = new Order(createdCustomer.getId(),createdProduct.getId(), 12);
+        createNotAllowedOrder(order);
+    }
+
+
+    @Test
+	@DisplayName("Create an order with more price than customer credit and verify that is not created.")
+	public void createOrderWithoutEnoughCreditTest() throws Exception{
+
+        Customer customer = new Customer("Adrian", 100.00);
+        Customer createdCustomer = createCustomer(customer);
+        validateUserCreated(customer, createdCustomer);
+
+        Product product = new Product("Coca-Cola", 10, 20);
+        Product createdProduct = createProduct(product);
+        validateProduct(product, createdProduct);
+
+        Order order = new Order(createdCustomer.getId(),createdProduct.getId(), 9);
+        createNotAllowedOrder(order);
+    }
+
     private Order createOrder(Order order) throws JsonProcessingException {
         return given().
                 port(port).
@@ -69,6 +102,18 @@ public class OrderTest {
             .extract().as(Order.class);
     }
 
+    private void createNotAllowedOrder(Order order) throws JsonProcessingException {
+        given().
+                port(port).
+            request()
+                .body(objectMapper.writeValueAsString(order))
+                .contentType(ContentType.JSON).
+        when().
+            post("/api/order/").
+        then().
+            assertThat().
+                statusCode(405);
+    }
 
     private void validateOrder(Order order, Order createdOrder) {
         given().
