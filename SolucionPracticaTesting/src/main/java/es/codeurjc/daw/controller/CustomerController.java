@@ -2,7 +2,6 @@ package es.codeurjc.daw.controller;
 
 import java.util.Optional;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.codeurjc.daw.model.Customer;
+import es.codeurjc.daw.model.ReserveCreditDto;
 import es.codeurjc.daw.services.CustomerService;
 import es.codeurjc.daw.services.NotificationService;
 
@@ -43,15 +43,33 @@ public class CustomerController {
         return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
     }
 
+    // @PutMapping("/customer/{id}/credit")
+	// public ResponseEntity<Customer> addCredit(@RequestBody Customer newCustomer, @PathVariable final Long id) {
+    //     Optional<Customer> customer = this.customService.get(id);
+    //     if (customer.isPresent()){
+    //         this.customService.addCredit(customer.get(), newCustomer.getCredit());
+    //         this.notificationService.notify("Credito añadido.");
+    //         return new ResponseEntity<Customer>(customer.get(), HttpStatus.OK);
+    //     }else{
+    //         return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
+    //     }
+    // }
+
+
     @PutMapping("/customer/{id}/credit")
-	public ResponseEntity<Customer> addCredit(@RequestBody Customer newCustomer, @PathVariable final Long id) {
+	public ResponseEntity<ReserveCreditDto> reserveCredit(@RequestBody ReserveCreditDto reserveCreditDto, @PathVariable final Long id) {
         Optional<Customer> customer = this.customService.get(id);
         if (customer.isPresent()){
-            this.customService.addCredit(customer.get(), newCustomer.getCredit());
-            this.notificationService.notify("Credito añadido.");
-            return new ResponseEntity<Customer>(customer.get(), HttpStatus.OK);
+            if(this.customService.isEnoguthMoney(customer.get(), reserveCreditDto.getAmount())){
+                this.customService.updateCredit(customer.get(), reserveCreditDto.getAmount());
+                this.notificationService.notify("Credito actualizado.");
+                return new ResponseEntity<ReserveCreditDto>(reserveCreditDto, HttpStatus.OK);
+            }
+            reserveCreditDto.setAmount(-1.0);
+            return new ResponseEntity<ReserveCreditDto>(reserveCreditDto, HttpStatus.METHOD_NOT_ALLOWED);
         }else{
-            return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
+            reserveCreditDto.setAmount(-1.0);
+            return new ResponseEntity<ReserveCreditDto>(reserveCreditDto, HttpStatus.NOT_FOUND);
         }
     }
 

@@ -19,8 +19,16 @@ public class CustomerService {
         this.customerRepository.save(customer);
     }
 
-    public boolean isEnoguthMoney(Long customerId) {
-        return false;
+    public boolean isEnoguthMoney(Customer customer, double minimun) {
+        if(minimun < 0){
+            if(customer.getCredit() >= Math.abs(minimun)){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return true;
+        }
     }
 
     public Optional<Customer> get(Long id) {
@@ -29,17 +37,17 @@ public class CustomerService {
 
 	public double getCredit(Customer customer) {
 		return customer.getCredit();
-	}
-
-	public void removeCredit(Customer customer, double orderAmount) {
-        customer.setCredit(customer.getCredit() - orderAmount);
+    }
+    
+    public void updateCredit(Customer customer, double amount){
+        if(amount > 0){
+            customer.setCredit(customer.getCredit() + amount);
+        }else{
+            customer.setCredit(customer.getCredit() - Math.abs(amount));
+        }
         this.customerRepository.save(customer);
-	}
 
-	public void addCredit(Customer customer, double money) {
-        customer.setCredit(customer.getCredit() + money);
-        this.customerRepository.save(customer);
-	}
+    }
 
 	public void add(Customer customer) {
         this.customerRepository.save(customer);

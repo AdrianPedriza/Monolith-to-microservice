@@ -6,7 +6,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     CustomerTest.class,
-    OrderTest.class,
     ProductTest.class
     })
 

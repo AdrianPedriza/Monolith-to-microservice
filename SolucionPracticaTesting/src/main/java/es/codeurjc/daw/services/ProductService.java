@@ -3,6 +3,8 @@ package es.codeurjc.daw.services;
 import java.util.List;
 import java.util.Optional;
 
+import java.lang.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +35,23 @@ public class ProductService {
             return product.get().getPrice() * units;
         }
 		return 0;
-	}
+    }
+    
+    public void update(Product product, int units){
+        if(units < 0){
+            product.setStock(product.getStock()- Math.abs(units));
+        }else{
+            product.setStock(product.getStock() + units);
+        }
+        this.productRepository.save(product);
+    }
 
 	public boolean hasEnoughtStock(Product product, int units) {
-		return this.productRepository.findById(product.getId()).get().getStock() >= units;
+        if(units < 0){
+            return this.productRepository.findById(product.getId()).get().getStock() >= Math.abs(units);
+        }else{
+            return true;
+        }
+		
 	}
 }
