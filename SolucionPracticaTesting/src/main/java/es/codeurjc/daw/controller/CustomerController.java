@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.codeurjc.daw.model.Customer;
+import es.codeurjc.daw.model.CustomerDto;
 import es.codeurjc.daw.model.ReserveCreditDto;
 import es.codeurjc.daw.services.CustomerService;
 import es.codeurjc.daw.services.NotificationService;
@@ -29,7 +30,8 @@ public class CustomerController {
     private NotificationService notificationService;
 
     @PostMapping("/customer/")
-    public ResponseEntity<Customer> newCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<Customer> newCustomer(@RequestBody CustomerDto customerDto) {
+        Customer customer = new Customer(customerDto);
         this.customService.add(customer);
         return new ResponseEntity<Customer>(customer, HttpStatus.CREATED);
     }
@@ -42,19 +44,6 @@ public class CustomerController {
         }
         return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
     }
-
-    // @PutMapping("/customer/{id}/credit")
-	// public ResponseEntity<Customer> addCredit(@RequestBody Customer newCustomer, @PathVariable final Long id) {
-    //     Optional<Customer> customer = this.customService.get(id);
-    //     if (customer.isPresent()){
-    //         this.customService.addCredit(customer.get(), newCustomer.getCredit());
-    //         this.notificationService.notify("Credito añadido.");
-    //         return new ResponseEntity<Customer>(customer.get(), HttpStatus.OK);
-    //     }else{
-    //         return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
-    //     }
-    // }
-
 
     @PutMapping("/customer/{id}/credit")
 	public ResponseEntity<ReserveCreditDto> reserveCredit(@RequestBody ReserveCreditDto reserveCreditDto, @PathVariable final Long id) {

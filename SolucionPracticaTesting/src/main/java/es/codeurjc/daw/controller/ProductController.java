@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.codeurjc.daw.services.ProductService;
 import es.codeurjc.daw.model.Product;
+import es.codeurjc.daw.model.ProductDto;
 import es.codeurjc.daw.model.UpdateProductDto;
 
 @RestController
@@ -47,18 +48,21 @@ public class ProductController {
 		if(product.isPresent()){
 			if (this.productService.hasEnoughtStock(product.get(), updateProductDto.getUnits())){
 				this.productService.update(product.get(), updateProductDto.getUnits());
-				double price = this.productService.getAmount(id, updateProductDto.getUnits());
+				double price = this.productService.getAmount(product.get(), updateProductDto.getUnits());
 				updateProductDto.setPrice(price);
 				return new ResponseEntity<>(updateProductDto, HttpStatus.CREATED);
 			}else{
+				updateProductDto.setPrice(-1.0);
 				return new ResponseEntity<>(updateProductDto, HttpStatus.METHOD_NOT_ALLOWED);
 			}
 		}
+		updateProductDto.setPrice(-1.0);
 		return new ResponseEntity<>(updateProductDto, HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping("/product")
-	public ResponseEntity<Product> newProduct(@RequestBody Product product) {
+	public ResponseEntity<Product> newProduct(@RequestBody ProductDto productDto) {
+		Product product = new Product(productDto);
 		this.productService.addProduct(product);
 		return new ResponseEntity<>(product, HttpStatus.CREATED);
 	}

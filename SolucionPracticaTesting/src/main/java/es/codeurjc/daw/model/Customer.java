@@ -29,7 +29,13 @@ public class Customer {
     }
 
 
-    public void setId(Long id) {
+    public Customer(CustomerDto customerDto) {
+        this.id = customerDto.getId();
+        this.name = customerDto.getName();
+        this.credit = customerDto.getCredit();
+	}
+
+	public void setId(Long id) {
         this.id = id;
     }
 

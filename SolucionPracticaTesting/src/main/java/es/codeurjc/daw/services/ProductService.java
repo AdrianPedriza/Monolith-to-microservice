@@ -29,12 +29,8 @@ public class ProductService {
         this.productRepository.save(product);
     }
 
-	public double getAmount(Long productId, int units) {
-        Optional<Product> product = this.productRepository.findById(productId);
-        if (product.isPresent()){
-            return product.get().getPrice() * units;
-        }
-		return 0;
+	public double getAmount(Product product, int units) {
+        return product.getPrice() * units;
     }
     
     public void update(Product product, int units){

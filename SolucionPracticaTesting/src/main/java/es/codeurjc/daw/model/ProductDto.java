@@ -1,36 +1,20 @@
 package es.codeurjc.daw.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
+public class ProductDto {
 
-@Entity
-@Table(name = "Product")
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private int stock;
     private String name;
     private double price;
 
-    public Product(){}
+    public ProductDto(){}
 
-    public Product(String name, int stock, double price){
+    public ProductDto(String name, int stock, double price){
         this.name = name;
         this.stock = stock;
         this.price = price;
-    }
-
-    public Product(ProductDto productDto){
-        this.id = productDto.getId();
-        this.name = productDto.getName();
-        this.price = productDto.getPrice();
     }
 
     public void setId(Long id) {
