@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.codeurjc.daw.model.Customer;
 import es.codeurjc.daw.model.CustomerDto;
+import es.codeurjc.daw.model.Notification;
 import es.codeurjc.daw.model.ReserveCreditDto;
 import es.codeurjc.daw.services.CustomerService;
 import es.codeurjc.daw.services.NotificationService;
@@ -51,7 +52,7 @@ public class CustomerController {
         if (customer.isPresent()){
             if(this.customService.isEnoguthMoney(customer.get(), reserveCreditDto.getAmount())){
                 this.customService.updateCredit(customer.get(), reserveCreditDto.getAmount());
-                this.notificationService.notify("Credito actualizado.");
+                this.notificationService.notify(new Notification(customer.get().getId(),reserveCreditDto.getAmount()));
                 return new ResponseEntity<ReserveCreditDto>(reserveCreditDto, HttpStatus.OK);
             }
             reserveCreditDto.setAmount(-1.0);
