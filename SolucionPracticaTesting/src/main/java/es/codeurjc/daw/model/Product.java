@@ -31,6 +31,7 @@ public class Product {
         this.id = productDto.getId();
         this.name = productDto.getName();
         this.price = productDto.getPrice();
+        this.stock = productDto.getStock();
     }
 
     public void setId(Long id) {

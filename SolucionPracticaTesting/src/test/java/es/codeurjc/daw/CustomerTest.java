@@ -21,6 +21,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import es.codeurjc.daw.model.Customer;
+import es.codeurjc.daw.model.ReserveCreditDto;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -61,8 +62,8 @@ public class CustomerTest {
         
         validateUserCreated(customer, createdCustomer);
 
-        Customer modifiedCustomer = addCreditToCustomer(createdCustomer, newAmount);
-
+        addCreditToCustomer(createdCustomer, new ReserveCreditDto(newAmount));
+        Customer modifiedCustomer = getCustomer(createdCustomer);
         assertThat(modifiedCustomer.getCredit(), equalTo(customer.getCredit() + newAmount));
     }
 
@@ -96,18 +97,26 @@ public class CustomerTest {
                     body("credit", equalTo((float) customer.getCredit()));
     }
 
-    private Customer addCreditToCustomer(Customer createdCustomer, double credit) throws JsonProcessingException {
-        return given().port(port).
+    private void addCreditToCustomer(Customer createdCustomer, ReserveCreditDto credit) throws JsonProcessingException {
+        given().port(port).
             request()
-                .body(objectMapper.writeValueAsString(new Customer(credit)))
+                .body(objectMapper.writeValueAsString(credit))
                 .contentType(ContentType.JSON).
         when().
             put("/api/customer/{id}/credit", createdCustomer.getId()).
         then().
             assertThat().
-                statusCode(200).
-                body("name", equalTo(createdCustomer.getName()))
-            .extract().as(Customer.class);
+                statusCode(200);
+    }
+
+
+    private Customer getCustomer(Customer customer) throws JsonProcessingException {
+        return given().
+                port(port).
+            when().
+                get("/api/customer/{id}", customer.getId()).
+            then()
+                .extract().as(Customer.class);
     }
 
 }
