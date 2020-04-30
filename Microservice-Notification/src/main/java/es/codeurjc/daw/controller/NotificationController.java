@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.codeurjc.daw.model.Notification;
+import es.codeurjc.daw.model.NotificationDto;
+import es.codeurjc.daw.services.NotificationService;
+
 
 @RestController
 @RequestMapping("/api")
@@ -21,9 +25,9 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @PostMapping("/notification")
-    public ResponseEntity<Notification> newNotification(@RequestBody Notification notification) {
-        this.notificationService.add(notification);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+    public ResponseEntity<NotificationDto> newNotification(@RequestBody NotificationDto notificationDto) {
+        this.notificationService.add(new Notification(notificationDto));
+        return new ResponseEntity<>(notificationDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/notification/{id}")

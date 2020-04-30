@@ -30,6 +30,11 @@ public class Notification {
         this.amount = amount;
     }
 
+    public Notification(NotificationDto notificationDto){
+        this.customerId = notificationDto.getCustomerId();
+        this.amount = notificationDto.getAmount();
+    }
+
     public double getAmount(){
         return this.amount;
     }
