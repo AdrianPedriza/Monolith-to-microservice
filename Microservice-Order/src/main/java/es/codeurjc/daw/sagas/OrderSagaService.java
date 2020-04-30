@@ -16,8 +16,8 @@ import es.codeurjc.daw.repositories.OrderRepository;
 @Service
 public class OrderSagaService {
 
-    static final String URI_RESERVE_CREDIT = "http://localhost:8080/api/customer/{id}/credit";
-    static final String URI_UPDATE_STOCK = "http://localhost:8080/api/product/{id}";
+    static final String URI_RESERVE_CREDIT = "http://monolith:8080/api/customer/{id}/credit";
+    static final String URI_UPDATE_STOCK = "http://monolith:8080/api/product/{id}";
 
     @Autowired
     private OrderRepository orderRepository;

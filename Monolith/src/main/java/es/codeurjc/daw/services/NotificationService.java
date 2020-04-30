@@ -16,7 +16,7 @@ public class NotificationService {
 
     private final static Logger LOGGER = Logger.getLogger(NotificationService.class.getName());
 
-    final String URI_NOTIFICATION_SERVICE = "http://localhost:8082/api/notification";
+    final String URI_NOTIFICATION_SERVICE = "http://microservice-notification:8082/api/notification";
 
     @Value("${notification.microoservice}")
     private boolean notificationToMicroService;
